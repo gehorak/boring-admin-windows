@@ -39,8 +39,11 @@ body:
     id: lifecycle
     attributes:
       label: Lifecycle domain (required)
-      description: Select exactly one lifecycle domain.
+      description: |
+          Select exactly one lifecycle domain.
+          Lifecycle domains are defined in `ROADMAP.md`.
       options:
+        # --- Core OS lifecycle ---
         - lifecycle-00-09-env-safety
         - lifecycle-10-19-bootstrap
         - lifecycle-20-29-security-policy
@@ -50,7 +53,12 @@ body:
         - lifecycle-60-69-data-state
         - lifecycle-70-79-maintenance
         - lifecycle-80-89-incident
-        - lifecycle-90-99-audit
+        - lifecycle-90-99-audit     
+        # --- Project & meta lifecycle ---
+        - lifecycle-architecture
+        - lifecycle-governance
+        - lifecycle-tooling
+        - lifecycle-cross-cutting
     validations:
       required: true
 
@@ -60,13 +68,17 @@ body:
       label: Type of work (required)
       description: Select exactly one type of work.
       options:
-        - script-safe
-        - script-verify
-        - script-manual
-        - documentation
-        - testing
-        - makefile
-        - ci
+      # --- Runtime scripts ---
+      - script-safe        # SAFE PowerShell script
+      - script-verify      # VERIFY (read-only) script
+      - script-manual      # MANUAL (human-confirmed) script
+       
+      # --- Meta / supporting work ---
+      - documentation      # Docs, contracts, architecture
+      - testing            # Tests and validation
+      - refactor           # Internal restructuring, no behavior change
+      - tooling            # Makefile, helpers, developer tooling
+      - ci                 # CI configuration and pipelines
     validations:
       required: true
 
@@ -114,3 +126,15 @@ body:
         - STRUCTURE.md § YY–ZZ
     validations:
       required: false
+
+  - type: checkboxes
+    id: change_characteristics
+    attributes:
+      label: Change characteristics (if applicable)
+      description: |
+        Select any characteristics that apply.
+        These flags highlight review-sensitive changes.
+      options:
+      - label: Changes SCRIPT-CONTRACT
+      - label: Expands script scope
+      - label: Behavioral change

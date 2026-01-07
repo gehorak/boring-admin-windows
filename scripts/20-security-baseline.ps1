@@ -3,38 +3,48 @@
 #
 # PURPOSE
 # -------
-# Establish and VERIFY a minimal, sane security baseline for Windows 11
-# in SMB / no-domain environments.
+# Define and verify a minimal, explicit security baseline
+# for Windows 11 systems in SMB / non-domain environments.
 #
-# SECURITY BASELINE = enforcement of high-value, low-risk controls.
+# This baseline focuses on high-value, low-risk controls
+# that are universally expected on administered systems.
 #
-# THIS SCRIPT IS:
-# ----------------
-# - minimal
-# - explicit
-# - admin-driven
-#
-# THIS SCRIPT IS NOT:
-# -------------------
-# - a hardening script
-# - a policy engine
-# - a replacement for MDM / GPO
-#
-# ============================================================================
+# LIFECYCLE
+# ---------
+# Stage: 20–29 — Security & System Policy
 #
 # SCOPE
 # -----
 # MAY:
-# - Verify security-critical system state
-# - Enforce mandatory security prerequisites (explicit only)
+# - verify security-critical system state
+# - enforce explicitly documented security prerequisites
 #
 # MUST NOT:
-# - Tune OS behavior (belongs to 25-system-configuration)
-# - Change UX defaults
-# - Apply registry hardening
-# - Modify firewall rules
+# - perform general OS hardening
+# - tune system or UX behavior
+# - apply registry hardening baselines
+# - modify firewall rules
+# - replace or emulate MDM / GPO policy engines
 #
+# NON-GOALS
+# ---------
+# - comprehensive security hardening
+# - behavioral UX enforcement
+# - performance or reliability tuning
+#
+# SAFETY
+# ------
+# - Minimal and explicit actions only
+# - No implicit or broad configuration changes
+# - No reboot
+# - Administrative intent must be clear and reviewable
+#
+# CONTRACT
+# --------
+# This script follows docs/SCRIPT-CONTRACT.md
+# and the lifecycle model defined in docs/STRUCTURE.md
 # ============================================================================
+
 
 # -----------------------------------------------------------------------------
 # Bootstrap

@@ -1,12 +1,41 @@
 # ============================================================================
-# 00-env-check.ps1
+# 00-env-preflight.ps1
 #
 # PURPOSE
 # -------
-# Verify that the environment is safe to run win11-admin scripts.
+# Verify that the execution environment is safe and suitable
+# for running boring-admin-windows lifecycle scripts.
 #
-# This script makes NO changes.
+# This script performs preflight checks only.
+#
+# LIFECYCLE
+# ---------
+# Stage: 00–09 — Environment & Safety
+#
+# SCOPE
+# -----
+# - execution privileges (administrator context)
+# - PowerShell runtime version and capabilities
+# - basic platform assumptions
+#
+# NON-GOALS
+# ---------
+# - system configuration
+# - security policy changes
+# - software installation
+#
+# SAFETY
+# ------
+# - This script makes NO changes to system state
+# - Read-only execution
+# - Fail-fast behavior on unmet preconditions
+#
+# CONTRACT
+# --------
+# This script follows docs/SCRIPT-CONTRACT.md
+# and the lifecycle model defined in docs/STRUCTURE.md
 # ============================================================================
+
 
 # -----------------------------------------------------------------------------
 # Bootstrap

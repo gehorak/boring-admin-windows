@@ -38,7 +38,7 @@ Deviations must be intentional and explicit.
 *Is it safe to proceed at all?*
 
 ```text
-00-env-check.ps1
+00-env-preflight.ps1
 ````
 
 **Responsibilities:**
@@ -57,8 +57,8 @@ This stage must not modify system state.
 *Minimal preparation of the operating system*
 
 ```text
-10-bootstrap.ps1
-15-mini-debloat.safe.ps1
+10-bootstrap-orchestrator.ps1
+15-bootstrap-consumer-noise.safe.ps1
 ```
 
 **Responsibilities:**
@@ -78,7 +78,7 @@ not optimization.
 
 ```text
 20-security-baseline.ps1
-25-system-configuration.ps1
+25-system-explorer-ux.ps1
 ```
 
 **Responsibilities:**
@@ -139,7 +139,8 @@ This stage installs software without redefining system behavior.
 *Who can sign in to the system*
 
 ```text
-40-users.ps1
+40-identity-local-accounts.manual.ps1
+45-identity-local-guest.manual.ps1
 ```
 
 **Responsibilities:**
@@ -158,7 +159,7 @@ and security-critical.
 *What this machine is*
 
 ```text
-50-host.ps1
+50-host-identity.ps1
 ```
 
 **Responsibilities:**
@@ -250,7 +251,7 @@ from normal maintenance.
 *Verification of system state*
 
 ```text
-90-audit.ps1
+90-audit-system-state.verify.ps1
 ```
 
 **Responsibilities:**

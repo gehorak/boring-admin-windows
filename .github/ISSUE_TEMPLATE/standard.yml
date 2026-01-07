@@ -1,0 +1,116 @@
+name: Standard issue
+description: Architecture-aligned work item governed by ROADMAP.md
+title: "[phase-x] short, explicit description"
+labels: []
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ⚠️ Read before submitting
+
+        This repository is **roadmap-driven**.
+
+        An issue is valid only if it:
+        - aligns with `ROADMAP.md`
+        - belongs to exactly one lifecycle domain
+        - has exactly one work type
+        - is assigned to a roadmap phase (milestone)
+
+        Issues that do not meet these rules may be closed without discussion.
+
+  - type: dropdown
+    id: milestone
+    attributes:
+      label: Roadmap phase (Milestone)
+      description: Select the roadmap phase this issue belongs to.
+      options:
+        - phase-0-architecture (closed)
+        - phase-1-core-lifecycle (closed)
+        - phase-2-software-delivery
+        - phase-3-testing
+        - phase-4-makefile
+        - phase-5-ci-validation
+    validations:
+      required: true
+
+  - type: dropdown
+    id: lifecycle
+    attributes:
+      label: Lifecycle domain (required)
+      description: Select exactly one lifecycle domain.
+      options:
+        - lifecycle-00-09-env-safety
+        - lifecycle-10-19-bootstrap
+        - lifecycle-20-29-security-policy
+        - lifecycle-30-39-software
+        - lifecycle-40-49-identity
+        - lifecycle-50-59-host-identity
+        - lifecycle-60-69-data-state
+        - lifecycle-70-79-maintenance
+        - lifecycle-80-89-incident
+        - lifecycle-90-99-audit
+    validations:
+      required: true
+
+  - type: dropdown
+    id: worktype
+    attributes:
+      label: Type of work (required)
+      description: Select exactly one type of work.
+      options:
+        - script-safe
+        - script-verify
+        - script-manual
+        - documentation
+        - testing
+        - makefile
+        - ci
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What is the intended outcome of this issue?
+      placeholder: >
+        Describe the intended result, not the implementation details.
+    validations:
+      required: true
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints
+      description: Architectural or contract constraints that apply.
+      placeholder: |
+        - Must follow SCRIPT-CONTRACT
+        - SAFE / VERIFY / MANUAL rules
+        - No scope expansion
+    validations:
+      required: true
+
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope
+      description: Explicitly list what is NOT part of this issue.
+      placeholder: |
+        - Application configuration
+        - Automatic remediation
+        - Policy enforcement
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Related documents or roadmap sections.
+      placeholder: |
+        - ROADMAP.md § Phase X
+        - STRUCTURE.md § YY–ZZ
+    validations:
+      required: false

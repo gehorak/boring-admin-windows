@@ -6,8 +6,8 @@
 # Orchestrate the OS bootstrap lifecycle stage by invoking
 # strictly bounded bootstrap scripts in a defined order.
 #
-# This script coordinates execution.
-# It does not directly implement configuration changes.
+# This script coordinates execution only.
+# It does not implement configuration changes.
 #
 # LIFECYCLE
 # ---------
@@ -16,20 +16,18 @@
 # SCOPE
 # -----
 # - sequencing of bootstrap-stage scripts
-# - enforcement of preconditions and execution order
-# - propagation of failures (fail-fast)
+# - enforcement of execution order
+# - transparent propagation of exit codes
 #
 # NON-GOALS
 # ---------
 # - direct system configuration
-# - debloating or consumer noise removal
-# - security hardening
-# - performance tuning
+# - policy decisions
+# - error interpretation or remediation
 #
 # SAFETY
 # ------
 # - No direct system state changes
-# - No implicit elevation or reboot
 # - Acts only as an execution coordinator
 #
 # CONTRACT
@@ -38,40 +36,90 @@
 # and the lifecycle model defined in docs/STRUCTURE.md
 # ============================================================================
 
-
-# -----------------------------------------------------------------------------
-# Bootstrap
-# -----------------------------------------------------------------------------
+# ============================================================================
+# 0. BOOTSTRAP
+# ============================================================================
+# Establish execution context and load runtime helpers.
+# ============================================================================
 
 $ScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectRoot = Resolve-Path "$ScriptRoot\.."
 
 . "$ProjectRoot\lib\common.ps1"
 
+# Initialize warning state for orchestration.
+$script:HadWarnings = $false
+
+# ============================================================================
+# 1. EXECUTION CONTEXT
+# ============================================================================
+# Ensure safe execution context before orchestration begins.
+# ============================================================================
 
 Assert-Administrator
 Test-PowerShellVersion | Out-Null
 
-Write-Section "Bootstrap"
+Write-Section "10-bootstrap-orchestrator - Orchestration"
 
-# --- Enable long paths -------------------------------------------------------
-Write-Info "Enabling Win32 long paths support"
+# ============================================================================
+# 2. PRE-ORCHESTRATION SETUP
+# ============================================================================
+# Perform required setup steps needed for downstream scripts.
+# These helpers are considered orchestration primitives.
+# ============================================================================
 
-New-ItemProperty `
-  -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
-  -Name "LongPathsEnabled" `
-  -PropertyType DWord `
-  -Value 1 `
-  -Force | Out-Null
+Mount-DefaultUserProfile
 
-# --- Disable first logon animation ------------------------------------------
-Write-Info "Disabling first logon animation"
+# ============================================================================
+# 3. BOOTSTRAP EXECUTION SEQUENCE
+# ============================================================================
+# Execute bootstrap-stage scripts in a strict, explicit order.
+# This orchestrator does NOT interpret results.
+# It propagates exit codes transparently.
+# ============================================================================
 
-New-ItemProperty `
-  -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" `
-  -Name "EnableFirstLogonAnimation" `
-  -PropertyType DWord `
-  -Value 0 `
-  -Force | Out-Null
 
-Write-Info "Bootstrap completed."
+
+$BootstrapSequence = @(
+        "11-bootstrap-system-features.safe.ps1",
+        "15-bootstrap-consumer-noise.safe.ps1"
+)
+
+foreach ($ScriptName in $BootstrapSequence) {
+
+    $ScriptPath = Join-Path $ScriptRoot $ScriptName
+        
+    if (-not (Test-Path $ScriptPath)) {
+        Write-WarnFlagged "Skipping missing bootstrap script: $ScriptName"
+        continue
+    }
+    
+    Write-Info "Executing bootstrap stage script: $ScriptName"
+
+    & $ScriptPath
+    $exitCode = $LASTEXITCODE
+
+    if ($exitCode -ne 0) {
+        Write-Fail "Bootstrap script '$ScriptName' exited with code $exitCode."
+        Exit-Fatal "Bootstrap phase failed due to script error."
+    }   
+}
+
+# ============================================================================
+# 4. CLEANUP
+# ============================================================================
+# Ensure orchestration-related temporary state is cleaned up.
+# This section must execute regardless of earlier outcomes.
+# ============================================================================
+
+Dismount-DefaultUserProfile
+
+# ============================================================================
+# 5. COMPLETION & EXIT STRATEGY
+# ============================================================================
+# Exit deterministically based on observed warnings.
+# ============================================================================
+
+Write-Info "Bootstrap orchestration completed."
+
+Exit-Warn

@@ -1,7 +1,15 @@
 # ============================================================================
 # common.ps1
 #
+# PURPOSE
+# -------
 # Shared helper functions for boring-admin-windows scripts.
+#
+# This file defines the SINGLE source of truth for:
+# - runtime assertions
+# - output vocabulary
+# - exit semantics
+# - guarded system queries
 #
 # DESIGN PRINCIPLES
 # -----------------
@@ -10,34 +18,40 @@
 # - Explicit calls required
 # - Safe for dot-sourcing
 #
-# This file intentionally contains:
-# - assertions
-# - formatting helpers
-# - guarded system queries
+# EXIT SEMANTICS (VARIANT A)
+# -------------------------
+# - exit 0 : success (with or without warnings)
+# - exit 1 : fatal error
 #
-# It intentionally does NOT:
-# - modify system state
-# - emit output on load
-# - make policy decisions
+# Warnings are INFORMATIONAL only.
+# They NEVER control execution flow.
 # ============================================================================
 
 
-# ---------------------------------------------------------------------------
-# Runtime assertions
-# ---------------------------------------------------------------------------
+# ============================================================================
+# 0. RUNTIME STATE
+# ============================================================================
+# Shared state flags used by SAFE / VERIFY scripts.
+# Must be initialized by the caller script.
+# ============================================================================
 
+# Expected:
+# $script:HadWarnings = $false
+
+
+# ============================================================================
+# 1. RUNTIME ASSERTIONS
+# ============================================================================
+# Hard preconditions required for correct execution.
+# ============================================================================
 
 function Assert-Administrator {
     <#
     .SYNOPSIS
         Ensures the current PowerShell session runs with administrative privileges.
 
-    .WHY
-        Many system-level operations silently fail or partially succeed
-        when executed without elevation.
-
     .BEHAVIOR
-        - Terminates execution if not elevated.
+        - Terminates execution on failure.
         - This is a HARD requirement, not advisory.
     #>
 
@@ -56,19 +70,10 @@ function Test-PowerShellVersion {
     .SYNOPSIS
         Checks whether the script is running under PowerShell 7+.
 
-    .WHY
-        Windows PowerShell 5.1 lacks:
-        - reliable LocalAccounts behavior
-        - consistent module availability
-        - modern language/runtime features
-
     .BEHAVIOR
-        - Returns $true if PS >= 7
+        - Returns $true / $false for caller
         - Emits WARNING only (no termination)
-
-    .NOTE
-        This is an ADVISORY check.
-        The caller decides whether to continue or abort.
+        - NEVER terminates execution
     #>
 
     if ($PSVersionTable.PSVersion.Major -lt 7) {
@@ -80,9 +85,11 @@ function Test-PowerShellVersion {
 }
 
 
-# ---------------------------------------------------------------------------
-# Output helpers (UX consistency)
-# ---------------------------------------------------------------------------
+# ============================================================================
+# 2. OUTPUT HELPERS (UNIFIED VOCABULARY)
+# ============================================================================
+# All script output MUST go through these helpers.
+# ============================================================================
 
 function Write-Section {
     param (
@@ -117,51 +124,80 @@ function Write-Warn {
 function Write-WarnFlagged {
     param(
         [Parameter(Mandatory)]
-        [string]$Message,
-
-        [Parameter(Mandatory)]
-        [ref]$Flag
+        [string]$Message
     )
 
-    $Flag.Value = $true
+    # Caller is responsible for initializing $script:HadWarnings
+    $script:HadWarnings = $true
     Write-Warn $Message
 }
 
 function Write-OK {
-    param (
+    param(
         [Parameter(Mandatory)]
         [string]$Message
     )
 
-    Write-Host "[OK]   $Message" -ForegroundColor Green
+    Write-Host "[OK]   $Message"
 }
+
+function Write-Fail {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Message
+    )
+
+    Write-Host "[FAIL] $Message"
+}
+
+# ============================================================================
+# 3. EXIT HELPERS
+# ============================================================================
+# Exit codes follow PowerShell / OS semantics strictly.
+# ============================================================================
 
 function Exit-Warn {
-    exit 2
+   <#
+    .BEHAVIOR
+        - Emits warning summary if warnings occurred
+        - ALWAYS exits with code 0
+    #>
+
+    if ($script:HadWarnings) {
+        Write-Warn "Completed with warnings."
+    }
+
+    exit 0
 }
 
-function Exit-Fatal {
+function Exit-Fatal {}
+    <#
+    .BEHAVIOR
+    #>
     param (
         [Parameter(Mandatory)]
         [string]$Message
     )
 
-    Write-Host "[FAIL] $Message" -ForegroundColor Red
+    Write-Fail $Message" -ForegroundColor Red
     exit 1
 }
+    
 
-
-# ---------------------------------------------------------------------------
-# Registry & Profile Helpers (Default User Injection)
-# ---------------------------------------------------------------------------
-
+# ============================================================================
+# 4. REGISTRY & PROFILE HELPERS
+# ============================================================================
+# Orchestration helpers with explicit side effects.
+# ============================================================================
 
 function Mount-DefaultUserProfile {
     <#
     .SYNOPSIS
-        Mounts the Default User registry hive (NTUSER.DAT) to HKLM:\DefUser.
+        Mounts Default User NTUSER.DAT to HKLM:\DefUser.
     #>
-    Write-Info "Mounting Default User Profile Hive..."
+
+    Write-Info "Mounting Default User profile hive."
+
     $defaultHivePath = "C:\Users\Default\NTUSER.DAT"
     
     if (Test-Path "HKLM:\DefUser") {
@@ -169,10 +205,10 @@ function Mount-DefaultUserProfile {
         return
     }
 
-    # Pouziti reg.exe pro spolehlive namontovani
     reg load "HKLM\DefUser" $defaultHivePath | Out-Null
+
     if ($LASTEXITCODE -ne 0) {
-        Exit-Fatal "Failed to mount Default User hive."
+        Exit-Fatal "Failed to mount Default User profile hive."
     }
 }
 
@@ -180,15 +216,17 @@ function Mount-DefaultUserProfile {
 function Dismount-DefaultUserProfile {
     <#
     .SYNOPSIS
-        Dismounts the Default User registry hive and ensures all changes are flushed.
+        Safely unmounts Default User registry hive.    
     #>
-    Write-Info "Dismounting Default User Profile Hive..."
     
-    # Garbage collection k uvolneni handle, pokud by nejaky PS proces drzel cestu
+    Write-Info "Dismounting Default User profile hive."
+    
+    # Garbage collection for handle
     [GC]::Collect()
     [GC]::WaitForPendingFinalizers()
 
     reg unload "HKLM\DefUser" | Out-Null
+    
     if ($LASTEXITCODE -ne 0) {
         Write-Warn "Failed to dismount Default User hive. It might be locked."
     }
@@ -198,54 +236,58 @@ function Dismount-DefaultUserProfile {
 function Set-RegistryPreference {
     <#
     .SYNOPSIS
-        Zapíše hodnotu do HKCU aktuálního uživatele i do namontovaného Default User profilu.
+        Writes a registry value to:
+        - HKCU (current user)
+        - HKLM:\DefUser (if mounted)
     #>
+
     param (
-        [Parameter(Mandatory)] [string]$KeyPath,    # Relativní cesta (např. "Software\Microsoft\...")
+        [Parameter(Mandatory)] [string]$KeyPath,
         [Parameter(Mandatory)] [string]$ValueName,
         [Parameter(Mandatory)] $Value,
+        [ValidateSet("DWord","String","ExpandString","QWord")]
         [string]$ValueType = "DWord"
     )
 
     $targets = @("HKCU:\$KeyPath")
+
     if (Test-Path "HKLM:\DefUser") {
         $targets += "HKLM:\DefUser\$KeyPath"
     }
 
     foreach ($path in $targets) {
-        # Zajistíme, že existuje celá cesta ke klíči
+    
+        # Zajistime, ze existuje cela cesta ke klici
         if (-not (Test-Path $path)) {
             New-Item -Path $path -Force | Out-Null
         }
         
-        Set-ItemProperty -Path $path -Name $ValueName -Value $Value -Type $ValueType -Force | Out-Null
-        Write-Info "Registry updated: $path\$ValueName = $Value"
+        Set-ItemProperty `
+            -Path $path `
+            -Name $ValueName `
+            -Value $Value `
+            -Type $ValueType `
+            -Force | Out-Null
+
+        Write-Info "Registry set: $path\$ValueName = $Value"
     }
 }
 
-# ---------------------------------------------------------------------------
-# Guarded system queries
-# ---------------------------------------------------------------------------
+# ============================================================================
+# 5. GUARDED SYSTEM QUERIES
+# ============================================================================
+# Queries that must never block or crash the caller.
+# ============================================================================
 
 function Try-GetMpComputerStatus {
     <#
     .SYNOPSIS
-        Safely queries Windows Defender status with timeout protection.
-
-    .WHY
-        Get-MpComputerStatus uses Defender CIM provider which is known to:
-        - hang during MSI installs
-        - block under Tamper Protection
-        - never throw terminating errors
+        Non-blocking Defender status query.
 
     .BEHAVIOR
         - Executes query in isolated job
         - Returns $null on timeout
         - NEVER blocks caller
-
-    .USAGE
-        $mp = Try-GetMpComputerStatus
-        if ($mp) { ... }
     #>
 
     param (
@@ -261,10 +303,9 @@ function Try-GetMpComputerStatus {
         Remove-Job $job | Out-Null
         return $result
     }
-    else {
-        Stop-Job $job | Out-Null
-        Remove-Job $job | Out-Null
-        Write-Warn "Get-MpComputerStatus timed out after $TimeoutSec seconds."
-        return $null
-    }
-}
+
+    Stop-Job $job | Out-Null
+    Remove-Job $job | Out-Null
+    
+    Write-Warn "Get-MpComputerStatus timed out after $TimeoutSec seconds.
+    

@@ -37,7 +37,7 @@ Script intent is declared by filename.
 Pattern:
 ```
 
-NN-*.safe.ps1
+9N-*.verify.ps1
 
 ```
 
@@ -67,10 +67,16 @@ Purpose:
 - verify lifecycle assumptions
 
 Requirements:
-- MUST be read-only
+- MUST be strictly read-only
 - MUST NOT modify system state
 - MUST NOT perform remediation
-- MUST return ExitCode 0 unless a fatal error occurs
+- MUST NOT rely on silent failures
+- MUST produce a deterministic summary
+
+Exit behavior:
+- Exit 0 → verification successful, no deviations
+- Exit 2 → verification completed with warnings
+- Exit 1 → fatal error (cannot complete verification)
 
 ---
 
@@ -109,9 +115,16 @@ Purpose:
 - detection logic
 
 Requirements:
-- MUST have no side effects
-- MUST NOT execute on import
-- MUST NOT modify global state
+- MUST have no side effects on import
+- MUST NOT execute code on load
+- MUST NOT modify global or script state
+- MUST NOT make policy decisions
+- MUST be safe for dot-sourcing
+
+Library helpers may:
+- emit formatted output only when explicitly called
+- terminate execution only via documented helpers (e.g. Exit-Fatal)
+
 
 ---
 
@@ -123,25 +136,37 @@ All scripts MUST terminate with a meaningful exit code.
 |-----:|--------|
 | 0 | Success / compliant |
 | 1 | Error / failure |
-| 2 | Skipped / not applicable |
+| 2 | Completed with warnings |
 
-Scripts MUST NOT rely on text output to signal failure.
+Scripts MUST NOT rely on text output alone to signal failure.
+WARN conditions MUST be reflected in exit code where applicable.
+VERIFY scripts MUST use Exit 2 for non-fatal deviations.
 
 ---
 
 ## 4. OUTPUT RULES
 
-Allowed output channels:
+Scripts MUST use the unified runtime output vocabulary.
 
-| Channel | Usage |
-|------|------|
-| INFO | normal progress |
-| WARN | non-fatal deviation |
-| ERROR | fatal condition |
+Allowed output prefixes:
 
-ERROR output MUST:
-- be accompanied by ExitCode 1
-- stop further execution
+ | Prefix | Meaning |
+ | [INFO] | normal progress |
+ | [OK]   | successful completion |
+ | [WARN] | non-fatal deviation |
+ | [FAIL] | fatal condition |
+ | [SKIP] | intentional non-action |
+
+Fatal conditions MUST:
+- emit [FAIL]
+- terminate execution (Exit 1)
+
+Scripts MUST NOT:
+- use Write-Error
+- use Write-Warning
+- invent custom prefixes
+
+All output formatting MUST go through helpers in lib/common.ps1.
 
 ---
 
@@ -172,9 +197,25 @@ This requirement does NOT apply to `.manual` scripts.
 
 ---
 
-## 7. CI ENFORCEMENT
+## 7. ERROR HANDLING
 
-The following are enforced via CI:
+Silent failure is forbidden.
+
+Rules:
+- -ErrorAction SilentlyContinue MUST NOT be used without explicit handling
+- All catch blocks MUST emit output or explicitly document ignored errors
+- Guarded queries MUST return $null instead of blocking
+
+Fatal errors MUST:
+- be explicit
+- stop execution
+- be visible in output and exit code
+
+---
+
+## 8. CI ENFORCEMENT
+
+CI enforcement (current or future) MAY include:
 
 * ScriptAnalyzer lint
 * Header presence and lifecycle declaration
@@ -184,11 +225,11 @@ The following are enforced via CI:
 
 MANUAL scripts MUST NOT be executed in CI.
 
-Any violation is considered a regression.
+CI is advisory, not authoritative.
 
 ---
 
-## 8. NON-GOALS
+## 9. NON-GOALS
 
 This project intentionally does NOT provide:
 
@@ -198,7 +239,7 @@ This project intentionally does NOT provide:
 
 ---
 
-## 9. CHANGE POLICY
+## 10. CHANGE POLICY
 
 Breaking this contract requires:
 
@@ -208,3 +249,7 @@ Breaking this contract requires:
 
 Silent contract changes are not allowed.
 ---
+
+
+If a script feels easier to write by violating this contract,
+the contract is intentionally correct and the script is wrong.

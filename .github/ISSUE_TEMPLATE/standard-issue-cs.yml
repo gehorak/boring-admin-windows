@@ -1,0 +1,276 @@
+name: Standard issue CS
+description: Architektonicky řízený work item dle ROADMAP.md
+title: "[phase-x] stručný a jednoznačný popis"
+labels: []
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # ============================================================================
+        # ISSUE TEMPLATE — STANDARD (CS)
+        #
+        # PURPOSE
+        # -------
+        # Capture a single, well-defined architectural or implementation change
+        # aligned with the boring-admin-windows lifecycle and contracts.
+        #
+        # PRINCIPLES
+        # ----------
+        # - One issue = one intent
+        # - Explicit scope and non-scope
+        # - Decisions over discussions
+        # - Contracts over conventions
+        #
+        # CONTRACT
+        # --------
+        # This issue must comply with:
+        # - ROADMAP.md
+        # - STRUCTURE.md
+        # - SCRIPT-CONTRACT.md
+        # ============================================================================
+
+        ## ⚠️ Čti před vytvořením issue
+
+        Tento repozitář je **architekturou a releasy řízený**.
+
+        Issue je považováno za platné pouze pokud:
+        - je v souladu s `ROADMAP.md`
+        - patří do **právě jedné lifecycle oblasti**
+        - má **právě jeden typ práce**
+        - má určenou **hloubku zásahu (Phase-1 / Phase-2 / Phase-3)**
+        - je přiřazeno k **release milestone (vX.Y)**
+
+        Issues, která tato pravidla nesplňují, mohou být uzavřena bez další diskuse.
+
+  # --------------------------------------------------------------------------
+  # Intervention depth (Phase)
+  # --------------------------------------------------------------------------
+
+  - type: dropdown
+    id: depth
+    attributes:
+      label: Hloubka zásahu (Phase) – POVINNÉ
+      description: |
+        Určuje, jak hluboký a rizikový zásah do systému tato změna představuje.
+        Nejde o milestone ani workflow.
+      options:
+        - depth:phase-1 — základ / minimum / baseline
+        - depth:phase-2 — viditelnost / drift / awareness
+        - depth:phase-3 — hardening / enforcement / vysoké riziko
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Lifecycle domain
+  # --------------------------------------------------------------------------
+
+  - type: dropdown
+    id: lifecycle
+    attributes:
+      label: Lifecycle oblast (POVINNÉ)
+      description: |
+        Vyber přesně jednu lifecycle oblast, které se změna týká.
+        Lifecycle oblasti jsou definovány v `ROADMAP.md`.
+      options:
+        # --- Core OS lifecycle ---
+        - lifecycle-00-09-env-safety
+        - lifecycle-10-19-bootstrap
+        - lifecycle-20-29-security-policy
+        - lifecycle-30-39-software
+        - lifecycle-40-49-identity
+        - lifecycle-50-59-host-identity
+        - lifecycle-60-69-data-state
+        - lifecycle-70-79-maintenance
+        - lifecycle-80-89-incident
+        - lifecycle-90-99-audit
+        # --- Projektové / meta ---
+        - lifecycle-architecture
+        - lifecycle-governance
+        - lifecycle-tooling
+        - lifecycle-cross-cutting
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Work type
+  # --------------------------------------------------------------------------
+
+  - type: dropdown
+    id: worktype
+    attributes:
+      label: Typ práce (POVINNÉ)
+      description: |
+        Vyber přesně jeden typ práce.
+      options:
+        # --- Runtime skripty ---
+        - script-safe        # SAFE PowerShell skript
+        - script-verify      # VERIFY (read-only) skript
+        - script-manual      # MANUAL (vyžaduje zásah člověka)
+
+        # --- Podpůrná / meta práce ---
+        - documentation      # Dokumentace, kontrakty, architektura
+        - testing            # Testy a validace
+        - refactor           # Interní refaktor bez změny chování
+        - tooling            # Makefile, helpery, nástroje
+        - ci                 # CI konfigurace a pipeline
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Context / Why
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Kontext / Důvod (Context)
+      description: |
+        Proč toto issue vzniká?
+        Jaký problém, riziko nebo potřebu řeší?
+      placeholder: |
+        Příklad:
+        - Současný stav neumožňuje auditně ověřit XYZ
+        - Dochází k opakovanému nejasnému chování bez jasného kontraktu
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Goal / Desired state
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Cíl (Goal)
+      description: |
+        Jaký stav má po uzavření tohoto issue nastat?
+        Popisuj VÝSLEDEK, ne implementační detaily.
+      placeholder: |
+        Příklad:
+        - Po dokončení existuje jednoznačný VERIFY skript pro XYZ
+        - Stav systému je čitelný a auditovatelný
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Decision
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: decision
+    attributes:
+      label: Rozhodnutí / Zvolený přístup (Decision)
+      description: |
+        Jaký přístup byl vědomě zvolen a proč?
+        Uveď i to, co bylo vědomě ODMÍTNUTO.
+      placeholder: |
+        Příklad:
+        - Zvolen VERIFY-only přístup, bez automatické nápravy
+        - Hardening je výslovně mimo scope (Phase-3)
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Constraints
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Omezení a kontrakty (Constraints)
+      description: |
+        Architektonická, bezpečnostní nebo procesní omezení,
+        která NESMÍ být porušena.
+      placeholder: |
+        - Musí dodržovat SCRIPT-CONTRACT
+        - Žádné rozšíření scope
+        - SAFE / VERIFY / MANUAL pravidla
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Out of scope
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Mimo scope (Out of scope)
+      description: |
+        Co je výslovně MIMO záběr tohoto issue.
+        Tato sekce je povinná – pomáhá zabránit scope creep.
+      placeholder: |
+        - Konfigurace aplikací
+        - Automatická náprava stavu
+        - Vynucování politik
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Acceptance criteria
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Akceptační kritéria
+      description: |
+        Jasné a ověřitelné podmínky, za kterých lze issue uzavřít.
+        Musí být kontrolovatelné (ano / ne).
+      placeholder: |
+        - Změny odpovídají SCRIPT-CONTRACT
+        - Změna se týká pouze zvolené lifecycle oblasti
+        - Chování je deterministické a opakovatelné
+        - VERIFY skripty jsou read-only
+        - MANUAL skripty vyžadují explicitní potvrzení
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # References
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Reference
+      description: |
+        Související dokumenty, kapitoly roadmapy nebo architektury.
+      placeholder: |
+        - ROADMAP.md § …
+        - STRUCTURE.md § …
+    validations:
+      required: false
+
+  # --------------------------------------------------------------------------
+  # English summary (optional)
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: english_summary
+    attributes:
+      label: English summary (optional)
+      description: |
+        Short technical summary in English.
+        Intended for international readers or future external use.
+      placeholder: |
+        Brief description of the context, goal and constraints in English.
+    validations:
+      required: false
+
+  # --------------------------------------------------------------------------
+  # Change characteristics
+  # --------------------------------------------------------------------------
+
+  - type: checkboxes
+    id: change_characteristics
+    attributes:
+      label: Charakter změny (pokud relevantní)
+      description: |
+        Označ, pokud se změna týká citlivých oblastí.
+      options:
+        - label: Změna SCRIPT-CONTRACT
+        - label: Rozšiřuje scope skriptu
+        - label: Mění chování systému

@@ -1,0 +1,260 @@
+name: Standard issue EN
+description: Architecture-driven work item governed by ROADMAP.md
+title: "[phase-x] short and explicit description"
+labels: []
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # ============================================================================
+        # ISSUE TEMPLATE — STANDARD (EN)
+        #
+        # PURPOSE
+        # -------
+        # Capture a single, well-defined architectural or implementation change
+        # aligned with the boring-admin-windows lifecycle and contracts.
+        #
+        # PRINCIPLES
+        # ----------
+        # - One issue = one intent
+        # - Explicit scope and non-scope
+        # - Decisions over discussions
+        # - Contracts over conventions
+        #
+        # CONTRACT
+        # --------
+        # This issue must comply with:
+        # - ROADMAP.md
+        # - STRUCTURE.md
+        # - SCRIPT-CONTRACT.md
+        # ============================================================================
+
+        ## ⚠️ Read before creating an issue
+
+        This repository is **architecture- and release-driven**.
+
+        An issue is considered valid only if:
+        - it aligns with `ROADMAP.md`
+        - it belongs to **exactly one lifecycle domain**
+        - it has **exactly one type of work**
+        - it declares **intervention depth (Phase-1 / Phase-2 / Phase-3)**
+        - it is assigned to a **release milestone (vX.Y)**
+
+        Issues that do not follow these rules may be closed without discussion.
+
+  # --------------------------------------------------------------------------
+  # Intervention depth (Phase)
+  # --------------------------------------------------------------------------
+
+  - type: dropdown
+    id: depth
+    attributes:
+      label: Intervention depth (Phase) — REQUIRED
+      description: |
+        Defines how deep and risky the change is.
+        This is NOT a milestone or workflow step.
+      options:
+        - depth:phase-1 — baseline / minimum / foundation
+        - depth:phase-2 — visibility / drift / awareness
+        - depth:phase-3 — hardening / enforcement / high risk
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Lifecycle domain
+  # --------------------------------------------------------------------------
+
+  - type: dropdown
+    id: lifecycle
+    attributes:
+      label: Lifecycle domain (REQUIRED)
+      description: |
+        Select exactly one lifecycle domain.
+        Lifecycle domains are defined in `ROADMAP.md`.
+      options:
+        # --- Core OS lifecycle ---
+        - lifecycle-00-09-env-safety
+        - lifecycle-10-19-bootstrap
+        - lifecycle-20-29-security-policy
+        - lifecycle-30-39-software
+        - lifecycle-40-49-identity
+        - lifecycle-50-59-host-identity
+        - lifecycle-60-69-data-state
+        - lifecycle-70-79-maintenance
+        - lifecycle-80-89-incident
+        - lifecycle-90-99-audit
+        # --- Project / meta ---
+        - lifecycle-architecture
+        - lifecycle-governance
+        - lifecycle-tooling
+        - lifecycle-cross-cutting
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Type of work
+  # --------------------------------------------------------------------------
+
+  - type: dropdown
+    id: worktype
+    attributes:
+      label: Type of work (REQUIRED)
+      description: |
+        Select exactly one type of work.
+      options:
+        # --- Runtime scripts ---
+        - script-safe        # SAFE PowerShell script
+        - script-verify      # VERIFY (read-only) script
+        - script-manual      # MANUAL (human-confirmed)
+
+        # --- Supporting / meta work ---
+        - documentation      # Docs, contracts, architecture
+        - testing            # Tests and validation
+        - refactor           # Internal refactor, no behavior change
+        - tooling            # Makefile, helpers, tooling
+        - ci                 # CI configuration and pipelines
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Context / Why
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context / Reason
+      description: |
+        Why does this issue exist?
+        What problem, risk, or gap does it address?
+      placeholder: |
+        Example:
+        - Current state is not auditable
+        - Behavior is unclear or undocumented
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Goal / Desired state
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: |
+        What should be true once this issue is closed?
+        Describe the RESULT, not implementation details.
+      placeholder: |
+        Example:
+        - A VERIFY script exists to inspect XYZ
+        - Baseline is explicit and documented
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Decision
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision / Chosen approach
+      description: |
+        What approach was deliberately chosen, and why?
+        Include what was explicitly rejected.
+      placeholder: |
+        Example:
+        - VERIFY-only approach chosen
+        - No automatic remediation (Phase-3 excluded)
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Constraints
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints
+      description: |
+        Architectural, security, or process constraints
+        that MUST NOT be violated.
+      placeholder: |
+        - Must follow SCRIPT-CONTRACT
+        - No scope expansion
+        - SAFE / VERIFY / MANUAL rules
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Out of scope
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope
+      description: |
+        What is explicitly OUT of scope for this issue.
+        This section is mandatory to prevent scope creep.
+      placeholder: |
+        - Application configuration
+        - Automatic remediation
+        - Policy enforcement
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # Acceptance criteria
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: |
+        Clear, verifiable conditions for closing this issue.
+        Must be objectively checkable (yes / no).
+      placeholder: |
+        - Complies with SCRIPT-CONTRACT
+        - Limited to selected lifecycle domain
+        - Deterministic and repeatable behavior
+        - VERIFY scripts are read-only
+        - MANUAL scripts require explicit confirmation
+    validations:
+      required: true
+
+  # --------------------------------------------------------------------------
+  # References
+  # --------------------------------------------------------------------------
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Related documents, roadmap sections, or architecture references.
+      placeholder: |
+        - ROADMAP.md § …
+        - STRUCTURE.md § …
+    validations:
+      required: false
+
+  # --------------------------------------------------------------------------
+  # Change characteristics
+  # --------------------------------------------------------------------------
+
+  - type: checkboxes
+    id: change_characteristics
+    attributes:
+      label: Change characteristics (if applicable)
+      description: |
+        Mark if the change affects sensitive areas.
+      options:
+        - label: Changes SCRIPT-CONTRACT
+        - label: Expands script scope
+        - label: Changes system behavior

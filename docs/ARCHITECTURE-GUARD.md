@@ -25,8 +25,11 @@ These rules take precedence over convenience.
 
 The following principles are considered **architectural invariants**.
 
-They must not be violated without an explicit redesign
+They define the **architectural identity** of the project and
+must not be violated without an explicit architectural redesign
 and documentation update.
+
+**Any change to these principles constitutes a new architectural phase.**
 
 ---
 
@@ -65,10 +68,15 @@ it must be split.
 ## 4. Baseline vs overlay separation
 
 - Baseline defines the minimum required system state.
-- Overlays are optional and role-specific.
+- Overlays are optional, explicit, and role- or scenario-specific.
 - Baseline must never depend on overlays.
 
 Overlays may be removed without breaking the baseline.
+
+**The baseline is a fixed architectural contract.  
+It does not evolve through incremental improvements.  
+Any change that alters the meaning or scope of the baseline
+requires a new architectural phase.**
 
 ---
 
@@ -99,6 +107,9 @@ Fragile, state-dependent fixes are not acceptable.
 - No security tweaks that depend on obscurity.
 
 Security must be understandable and reviewable.
+
+**Documentation does not legitimize architectural violations.  
+Some changes are disallowed regardless of documentation quality.**
 
 ---
 
@@ -134,6 +145,9 @@ The following are explicitly out of scope:
 
 Attempts to introduce these are architectural violations.
 
+**Proposals falling into these categories are rejected by design
+and are not subject to technical debate within this project.**
+
 ---
 
 ## Violation handling
@@ -144,6 +158,9 @@ If a proposed change violates any rule in this document:
 - the architecture must be explicitly revised and documented
 
 Silent exceptions are not permitted.
+
+**Architectural revision implies a new phase
+and requires a new design rationale.**
 
 ---
 

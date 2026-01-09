@@ -13,6 +13,9 @@ related to the use of the boring-admin-windows repository.
 Its purpose is to set clear expectations
 and prevent misunderstanding of intent.
 
+This document is part of the **Phase 0 architectural contract**
+and is intended to remain stable over time.
+
 ---
 
 ## No warranty
@@ -40,6 +43,10 @@ All scripts and procedures described in this repository:
 The author assumes **no responsibility**
 for damage, data loss, downtime, or security incidents
 resulting from improper use or misunderstanding.
+
+This allocation of responsibility is **intentional**
+and aligns with the **human-first operating model**
+of the project.
 
 ---
 
@@ -100,6 +107,11 @@ Periodic review and reassessment are required.
 
 The author is not obligated to provide updates
 or long-term maintenance.
+
+Architectural documents defining **Phase 0**
+are intended to remain stable over time.
+If the architectural assumptions no longer hold,
+a new architectural phase is required.
 
 ---
 

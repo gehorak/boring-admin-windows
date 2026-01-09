@@ -1,31 +1,37 @@
 # STRUCTURE.md
 
-Windows Administration Lifecycle — Script Structure Contract
+Windows Administration Lifecycle — Architectural Structure
 
 ---
 
 ## Purpose
 
-This document defines the **structural and lifecycle contract**
-for the `boring-admin-windows` project.
+This document defines the **architectural lifecycle structure**
+of the boring-admin-windows project.
 
 It names and bounds the **core responsibility domains**
 involved in administering Windows workstations.
 
+It does **not** describe implementation details.
+It defines **where responsibilities belong and where they do not**.
+
 > Not every domain must be implemented immediately.
 > **Every domain must have an explicit place in the architecture.**
+
+This document is part of the **Phase 0 architectural contract**
+and is intended to remain stable over time.
 
 ---
 
 ## Core principles
 
-- Numeric prefixes represent **system lifecycle stages**
-- Each script has **a single, well-defined responsibility**
-- Scripts **must not exceed their declared scope**
-- The project addresses **responsibilities**, not tweaks
+- Lifecycle domains represent **responsibility boundaries**, not scripts
+- Each domain has a **single, explicit purpose**
+- Responsibilities must not leak between domains
+- Architecture defines *what belongs where*, not *how it is done*
 
 This structure is **normative**.
-Deviations must be intentional and explicit.
+Violations require architectural revision.
 
 ---
 
@@ -33,256 +39,198 @@ Deviations must be intentional and explicit.
 
 ---
 
-### 00–09 — ENVIRONMENT & SAFETY
+### ENVIRONMENT & SAFETY
 
-*Is it safe to proceed at all?*
-
-```text
-00-env-preflight.ps1
-````
+**Intent:**  
+Determine whether it is safe to proceed at all.
 
 **Responsibilities:**
+- execution preconditions
+- environment validation
+- platform compatibility
+- fail-fast behavior
 
-* execution privileges
-* runtime environment validation
-* platform compatibility
-* fail-fast behavior
-
-This stage must not modify system state.
+**Constraints:**
+- must not modify system state
 
 ---
 
-### 10–19 — OS BOOTSTRAP
+### OS BOOTSTRAP
 
-*Minimal preparation of the operating system*
-
-```text
-10-bootstrap-orchestrator.ps1
-15-bootstrap-consumer-noise.safe.ps1
-```
+**Intent:**  
+Prepare a clean and administrable operating system baseline.
 
 **Responsibilities:**
+- establish a usable baseline OS state
+- remove non-essential consumer noise
+- avoid irreversible or fragile changes
 
-* establish a clean baseline OS state
-* remove obvious consumer noise
-* avoid irreversible changes
-
-This stage prepares the system for administration,
-not optimization.
+**Constraints:**
+- prepares for administration, not optimization
+- must remain compatible with reinstall-first operation
 
 ---
 
-### 20–29 — SECURITY & SYSTEM POLICY
+### SECURITY & SYSTEM POLICY
 
-*Intentional assumption of system control*
-
-```text
-20-security-baseline.ps1
-25-system-explorer-ux.ps1
-```
+**Intent:**  
+Explicit assumption of administrative control over the system.
 
 **Responsibilities:**
+- baseline security posture
+- system policy configuration
+- definition of operational OS behavior
 
-* security baseline definition
-* system policy configuration
-* operational behavior of the OS
-
-This is **not hardening**.
-This is **explicit administrative configuration**.
-
----
-
-#### Sub-layer: USER EXPERIENCE BASELINE (Human Factors)
-
-*(Explicitly defined within 20–29)*
-
-**Purpose:**
-
-* reduce the likelihood of human error
-* establish safe and readable defaults
-* improve behavioral predictability
-
-**Conceptual examples:**
-
-* file extension visibility
-* hidden file handling
-* system dialog behavior
-* Explorer defaults
-
-This is **not aesthetics**.
-It is **operational safety through user behavior**.
+**Constraints:**
+- this is not hardening
+- enforcement and lockdown are out of scope
 
 ---
 
-### 30–39 — SOFTWARE DELIVERY
+#### Sub-domain: USER EXPERIENCE BASELINE (Human Factors)
 
-*How software enters the system*
+**Intent:**
+- reduce likelihood of human error
+- establish safe, readable defaults
+- improve behavioral predictability
 
-```text
-30-choco-install.ps1
-33-choco-core.ps1
-34-choco-baseline.ps1
-```
+**Notes:**
+- this is not aesthetics
+- this is operational safety through user behavior
+
+---
+
+### SOFTWARE DELIVERY
+
+**Intent:**  
+Define how software enters the system.
 
 **Responsibilities:**
+- controlled software introduction
+- repeatability
+- separation from OS policy decisions
 
-* define a single source of truth for installations
-* ensure repeatability
-* avoid interference with OS policy
-
-This stage installs software without redefining system behavior.
+**Constraints:**
+- must not redefine system behavior
+- must not bypass security decisions
 
 ---
 
-### 40–49 — IDENTITY & ACCESS
+### IDENTITY & ACCESS
 
-*Who can sign in to the system*
-
-```text
-40-identity-local-accounts.manual.ps1
-45-identity-local-guest.manual.ps1
-```
+**Intent:**  
+Define who can sign in and with what authority.
 
 **Responsibilities:**
+- local identity management
+- role separation
+- access boundaries
 
-* local account management
-* role separation (admin vs user)
-* access boundaries
-
-Identity decisions here are foundational
-and security-critical.
+**Notes:**
+- identity decisions are foundational
+- mistakes here are security-critical
 
 ---
 
-### 50–59 — HOST & DEVICE IDENTITY
+### HOST & DEVICE IDENTITY
 
-*What this machine is*
-
-```text
-50-host-identity.ps1
-```
+**Intent:**  
+Define what the machine is.
 
 **Responsibilities:**
-
-* hostname
-* locale
-* timezone
-* basic network identity
-
-This stage defines how the system presents itself.
+- system identity
+- locale and regional settings
+- basic network identity
 
 ---
 
-### 60–69 — DATA & STATE *(reserved)*
+### DATA & STATE
 
-```text
-# 60-data-layout.ps1
-# 65-backup-baseline.ps1
-```
+**Intent:**  
+Ensure separation of operating system and data.
 
 **Responsibilities:**
+- data location strategy
+- recovery state definition
+- backup responsibility boundaries
 
-* separation of OS and data
-* backup strategy
-* recovery state definition
-
-This domain is reserved for future expansion.
+**Notes:**
+- this domain may be implemented later
+- its absence does not invalidate the architecture
 
 ---
 
-### 70–79 — MAINTENANCE & LIFECYCLE
+### MAINTENANCE & LIFECYCLE
 
-*Long-term system operation*
-
-```text
-# 70-maintenance.ps1
-```
+**Intent:**  
+Enable controlled, long-term operation.
 
 **Responsibilities:**
-
-* periodic maintenance actions
-* controlled change over time
-* operational discipline
-
-Maintenance is intentional and bounded.
+- intentional maintenance actions
+- bounded change over time
+- operational discipline
 
 ---
 
-#### Sub-layer: OBSERVABILITY & DIAGNOSTICS
+#### Sub-domain: OBSERVABILITY & DIAGNOSTICS
 
-*(Explicitly defined within maintenance)*
+**Intent:**
+- observe system behavior over time
+- support audits and incident analysis
 
-**Purpose:**
-
-* observe system behavior over time
-* surface issues before audit
-* support incident analysis
-
-**Conceptual examples:**
-
-* event log retention
-* crash dump policy
-* baseline diagnostics
-
-This is **not telemetry**.
-It is **diagnostics for administrators**.
+**Constraints:**
+- observability is not telemetry
+- diagnostics must not enforce state
 
 ---
 
-### 80–89 — INCIDENT & RECOVERY *(reserved)*
+### INCIDENT & RECOVERY
 
-```text
-# 80-incident-mode.ps1
-```
+**Intent:**  
+Respond to abnormal or destructive events.
 
 **Responsibilities:**
+- incident containment
+- recovery coordination
+- information collection
 
-* incident response
-* damage containment
-* information collection
-
-This domain is intentionally separated
-from normal maintenance.
+**Constraints:**
+- separated from normal maintenance
+- prioritized for speed and clarity
 
 ---
 
-### 90–99 — AUDIT & REPORTING
+### AUDIT & REPORTING
 
-*Verification of system state*
-
-```text
-90-audit-system-state.verify.ps1
-```
+**Intent:**  
+Verify system state and readiness.
 
 **Responsibilities:**
+- state verification
+- readable reporting
+- handover support
 
-* state verification
-* readable reporting
-* system handover readiness
-
-Audit is **read-only**.
-It must not modify system state.
+**Constraints:**
+- audit is strictly read-only
+- must not modify system state
 
 ---
 
 ## Structural violations
 
-The following are considered violations of this contract:
+The following are considered architectural violations:
 
-* a script exceeding its declared responsibility
-* UX configuration implemented in software delivery
-* system changes performed during audit
-* undocumented registry or policy changes
+- responsibility leakage between domains
+- state modification during audit
+- enforcement logic hidden outside security domains
+- undocumented system changes
 
 ---
 
 ## Summary
 
-> **Windows administration is not only about security and software.**
-> It also includes system behavior, user behavior,
-> and the ability to observe the system over time.
+> **Windows administration is a lifecycle problem,
+> not a collection of tweaks.**
 
-This structure explicitly acknowledges
-and separates these responsibilities.
-
----
+This structure exists to ensure responsibilities
+remain explicit, bounded, and understandable over time.

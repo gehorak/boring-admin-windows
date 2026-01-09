@@ -16,8 +16,12 @@ It exists to:
 - enable handover to another technician
 - provide justification during audits or reviews
 
-This document is **not** a how-to guide.
+This document is **not** a how-to guide.  
 It documents **intent, constraints, and trade-offs**.
+
+It must be read together with:
+- ARCHITECTURE-GUARD
+- ARCHITECTURAL-POSITION
 
 ---
 
@@ -38,6 +42,8 @@ It documents **intent, constraints, and trade-offs**.
 
 Enterprise-scale patterns are therefore **intentionally out of scope**.
 
+These constraints are considered **structural**, not temporary.
+
 ---
 
 ## Core architectural principle
@@ -45,7 +51,8 @@ Enterprise-scale patterns are therefore **intentionally out of scope**.
 > **The operating system is disposable.  
 > Data and identity are valuable.**
 
-This principle informs all other design decisions.
+This principle informs all other design decisions
+and is not subject to later revision within this phase.
 
 **Implications:**
 
@@ -61,7 +68,7 @@ This principle informs all other design decisions.
 
 - one primary local administrator account
 - one disabled recovery administrator account
-- daily users operate as standard users with Microsoft identity
+- daily users operate as standard users with a cloud-backed identity
 
 ### Rationale
 
@@ -76,9 +83,9 @@ Separating administration from daily work provides the
 
 ## Identity and data strategy
 
-### Microsoft accounts for users
+### Cloud-backed user identity
 
-Microsoft accounts are used for end users because they provide:
+Cloud-backed user identities are used for end users because they provide:
 
 - device-independent identity
 - built-in multi-factor authentication
@@ -89,9 +96,9 @@ high loss and recovery risk.
 
 ---
 
-### OneDrive for user data
+### Cloud-backed user data
 
-OneDrive is used for user data because it enables:
+Cloud-backed user data storage is used because it enables:
 
 - automatic backup
 - file versioning and rollback
@@ -102,20 +109,21 @@ unacceptable data loss risk.
 
 ---
 
-## BitLocker decision
+## Disk encryption decision
 
 ### Requirement
 
-- BitLocker enabled on all internal drives
+- full-disk encryption enabled on all internal drives
 - recovery keys stored outside the device
 
 ### Rationale
 
 - device loss or theft is a realistic scenario
 - data-at-rest protection is mandatory
-- BitLocker imposes near-zero user experience cost
+- encryption imposes near-zero user experience cost
 
-This is a **low-effort, high-impact** security control.
+This is a **low-effort, high-impact** security control
+that does not alter the operating model.
 
 ---
 
@@ -124,14 +132,14 @@ This is a **low-effort, high-impact** security control.
 ### Rejected approaches
 
 - golden images
-- MDT / SCCM-style deployment
-- heavy unattended installation pipelines
+- image-based lifecycle management
+- heavy unattended deployment pipelines
 
 ### Selected approach
 
 - clean OS installation
 - small, readable administrative scripts
-- Chocolatey used strictly as a package transport mechanism
+- a dedicated package transport mechanism used strictly for software delivery
 
 This avoids hidden state, image drift,
 and opaque deployment behavior.
@@ -144,7 +152,7 @@ and opaque deployment behavior.
 
 **Allowed actions:**
 
-- removal of selected consumer UWP applications
+- removal of selected consumer applications
 - disabling ads, tips, and widgets
 - sane Explorer defaults
 
@@ -152,7 +160,7 @@ and opaque deployment behavior.
 
 - telemetry manipulation
 - disabling Windows Defender or Windows Update
-- removal of Edge, Store, or OneDrive
+- removal of core system components
 - disabling services or scheduled tasks
 
 The goal is to **reduce noise, not functionality**.
@@ -167,14 +175,16 @@ Security in this model prioritizes:
 - verification over enforcement
 - recoverability over lockdown
 
-The following are intentionally avoided:
+The following are intentionally avoided in the baseline:
 
 - registry hardening hacks
 - custom firewall rules
 - service disabling
 
-This keeps the system predictable,
-update-compatible, and supportable.
+These choices define the **baseline security posture** of the system.
+
+More restrictive security measures belong to **overlays**
+or require a **new architectural phase**.
 
 ---
 
@@ -191,7 +201,7 @@ All incidents are treated as expected operational events:
 
 1. wipe the system
 2. reinstall Windows
-3. reapply this repository
+3. reapply the baseline
 4. sign the user in
 5. restore data automatically
 
@@ -218,8 +228,10 @@ The workstation is treated as a **network consumer**, not an authority.
 
 The system is incomplete without its documentation.
 
-The following documents are considered architectural components:
+The following documents are considered **architectural components**:
 
+- Architecture Guard
+- Architectural Position
 - Operating Manual
 - Annual Maintenance Checklist
 - Design Rationale (this document)
@@ -250,8 +262,10 @@ This operating model should be replaced when:
 - multiple technicians manage the environment
 - centralized enforcement becomes a requirement
 
-At that point, migration to Active Directory or MDM
-is the appropriate solution.
+In such cases, this design is **not evolved**.
+
+It is replaced by a **new architectural phase**
+with a **new design rationale**.
 
 ---
 

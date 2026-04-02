@@ -1,0 +1,119 @@
+Boring Admin Reference License 1.0
+
+Copyright (c) 2026 gehorak
+
+1. Purpose
+
+This repository is made available as a reference repository for study,
+evaluation, internal use, and controlled adoption of the documented operating
+model and related implementation materials.
+
+2. Definitions
+
+`Repository` means all files, materials, documentation, scripts, text,
+configuration, and related content made available in this repository, unless a
+specific file expressly states otherwise.
+
+`Internal Use` means use by an individual person, or within a single legal
+entity or organization, for that person's or organization's own internal
+operations, evaluation, learning, administration, or implementation, without
+public redistribution or external commercialization.
+
+`Commercial Use` means use primarily intended for commercial advantage,
+monetary compensation, sale, licensing revenue, paid services, subscription
+revenue, managed-service revenue, consulting fees, implementation fees,
+training fees, resale, or other monetized exploitation.
+
+`Public Distribution` means making the Repository, or any modified or derived
+version of it, available to the public or to third parties outside the user's
+own organization, whether by publication, hosting, transfer, sale, licensing,
+distribution, or other disclosure.
+
+`Derivative` means any modified, adapted, translated, transformed, extended,
+reorganized, repackaged, or substantially re-expressed version of the
+Repository or a substantial part of it.
+
+3. License Grant
+
+Subject to the terms of this License, the author grants you a limited,
+non-exclusive, non-transferable, non-sublicensable license to:
+
+- access, read, and copy the Repository
+- use the Repository for personal Internal Use
+- use the Repository within your organization for Internal Use
+- modify the Repository for Internal Use only
+- share unmodified copies of the Repository for non-commercial reference
+  purposes, provided that all copyright, attribution, and license notices are
+  preserved
+
+4. Conditions
+
+You must preserve:
+
+- the author's name
+- copyright notices
+- this License
+- any applicable notices relating to naming, branding, trademark, and
+  commercial permissions
+
+5. Restrictions
+
+Without the author's prior written permission, you may not:
+
+- engage in Commercial Use of the Repository
+- Publicly Distribute any Derivative of the Repository
+- publish, promote, distribute, or host a fork, substitute, competing, or
+  successor public version of the Repository or its documented operating model
+- sell, sublicense, relicense, resell, package, or otherwise monetize the
+  Repository or any substantial part of it
+- provide paid training, paid consulting, paid implementation, managed
+  services, hosted services, subscription services, or other paid offerings
+  based primarily on the Repository or its documented operating model
+- remove, obscure, falsify, or misrepresent authorship, origin, or ownership
+- represent any fork, Derivative, adaptation, service, or package as official,
+  endorsed, certified, or authorized by the author
+- use the Repository in any way that conflicts with the separate naming,
+  trademark, branding, or commercial-use policies published by the author
+
+6. No Public Derivative Right
+
+This License permits internal modification for Internal Use, but does not grant
+any right to Publicly Distribute modified or derived versions of the Repository
+without prior written permission from the author.
+
+7. Commercial Licensing
+
+Commercial rights in the Repository may be granted only by separate written
+agreement with the author. No Commercial Use right is granted by this License.
+
+8. Trademarks, Naming, And Branding
+
+This License does not grant any right to use any trademark, trade name, brand,
+logo, project identity, or official-status claim of the author, except as
+necessary for truthful factual reference. Any such use remains subject to the
+author's separate naming, branding, and trademark policies.
+
+9. Termination
+
+This License terminates automatically if you breach any of its terms. Upon
+termination, you must cease all use of the Repository except to the extent that
+continued possession of lawfully retained internal archival copies is required
+by law or internal compliance obligations.
+
+10. No Warranty
+
+THE REPOSITORY IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+
+11. Limitation Of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE AUTHOR
+BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE
+REPOSITORY OR THE USE OF THE REPOSITORY.
+
+12. Entire License
+
+This License states the default permission model for the Repository unless a
+specific file or separate written agreement expressly provides otherwise.

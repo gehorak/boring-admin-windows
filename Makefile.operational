@@ -1,0 +1,147 @@
+# =============================================================================
+# boring-admin-windows — Makefile.operational
+#
+# PURPOSE
+# -------
+# Provide an explicit operational entrypoint for performing
+# system-changing actions on Windows 11 machines.
+#
+# This Makefile EXISTS TO:
+# -----------------------
+# - expose baseline APPLY actions
+# - expose optional OVERLAY actions (software, system UX)
+# - offer a recommended convenience path for experienced operators
+#
+# This Makefile DOES NOT:
+# ----------------------
+# - decide when actions should be run
+# - infer correctness or idempotence
+# - remove operator responsibility
+#
+# WARNING
+# -------
+# Targets in this file MAY CHANGE SYSTEM STATE.
+# Review outputs carefully and proceed intentionally.
+#
+# DESIGN PRINCIPLES
+# -----------------
+# - explicit over implicit
+# - apply ≠ verify
+# - operator remains the authority
+# - readable in 5–10 years
+#
+# REQUIREMENTS
+# ------------
+# - Windows 11 Pro
+# - PowerShell 5.1+ or PowerShell 7+ (pwsh)
+# - Run from elevated shell (Administrator)
+#
+# USAGE
+# -----
+#   make -f Makefile.operational help
+#   make -f Makefile.operational apply-security
+#   make -f Makefile.operational overlay-software
+#   make -f Makefile.operational all
+# =============================================================================
+
+
+# ---------------------------------------------------------------------------
+# Shell configuration
+# ---------------------------------------------------------------------------
+
+# Prefer PowerShell Core if available, fallback to Windows PowerShell.
+SHELL := $(shell where pwsh 2>NUL || echo powershell.exe)
+
+# Avoid profile side effects and policy persistence.
+PSFLAGS := -NoProfile -ExecutionPolicy Bypass -File
+
+.DEFAULT_GOAL := help
+
+
+# ---------------------------------------------------------------------------
+# Phony targets
+# ---------------------------------------------------------------------------
+
+.PHONY: \
+	help \
+	apply-security \
+	apply-identity \
+	apply-host \
+	overlay-software \
+	overlay-ux \
+	all
+
+
+# ---------------------------------------------------------------------------
+# HELP / DISCOVERY
+# ---------------------------------------------------------------------------
+
+help:
+	@echo ""
+	@echo "boring-admin-windows :: OPERATIONAL (APPLY / OVERLAY)"
+	@echo "----------------------------------------------------"
+	@echo ""
+	@echo "WARNING:"
+	@echo " - Targets in this Makefile may change system state."
+	@echo " - Review Makefile.audit before applying changes."
+	@echo ""
+	@echo "APPLY - BASELINE (write actions):"
+	@echo "  make -f Makefile.operational apply-security"
+	@echo "  make -f Makefile.operational apply-identity"
+	@echo "  make -f Makefile.operational apply-host"
+	@echo ""
+	@echo "OVERLAY - OPTIONAL (non-baseline):"
+	@echo "  make -f Makefile.operational overlay-software"
+	@echo "  make -f Makefile.operational overlay-ux"
+	@echo ""
+	@echo "CONVENIENCE (UX PATH):"
+	@echo "  make -f Makefile.operational all"
+	@echo ""
+	@echo "NOTE:"
+	@echo " - Targets are intentionally independent."
+	@echo " - 'all' is a recommended path, not a requirement."
+	@echo ""
+
+
+# ---------------------------------------------------------------------------
+# APPLY — BASELINE (WRITE)
+# ---------------------------------------------------------------------------
+
+apply-security:
+	$(SHELL) $(PSFLAGS) scripts/apply/security/20-security-orchestrator.manual.ps1
+
+apply-identity:
+	$(SHELL) $(PSFLAGS) scripts/apply/identity/40-identity-local-orchestrator.manual.ps1
+
+apply-host:
+	$(SHELL) $(PSFLAGS) scripts/apply/host/50-host-identity-orchestrator.manual.ps1
+
+
+# ---------------------------------------------------------------------------
+# OVERLAY — OPTIONAL (NON-BASELINE)
+# ---------------------------------------------------------------------------
+
+overlay-software:
+	$(SHELL) $(PSFLAGS) scripts/overlay/software/30-software-orchestrator.manual.ps1
+
+overlay-ux:
+	$(SHELL) $(PSFLAGS) scripts/overlay/ux/25-system-explorer-ux.manual.ps1
+
+
+# ---------------------------------------------------------------------------
+# CONVENIENCE (RECOMMENDED UX PATH)
+# ---------------------------------------------------------------------------
+
+all:
+	@echo "Recommended UX path: verify -> baseline apply -> optional overlay"
+	@echo "This path is provided for experienced operators."
+	$(MAKE) -f Makefile.audit verify-security
+	$(MAKE) -f Makefile.audit verify-identity
+	$(MAKE) -f Makefile.audit verify-host
+	$(MAKE) -f Makefile.audit verify-system
+	$(MAKE) -f Makefile.audit verify-recovery
+	$(MAKE) -f Makefile.operational apply-security
+	$(MAKE) -f Makefile.operational apply-identity
+	$(MAKE) -f Makefile.operational apply-host
+	$(MAKE) -f Makefile.operational overlay-software
+	$(MAKE) -f Makefile.operational overlay-ux

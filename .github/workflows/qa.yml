@@ -1,0 +1,76 @@
+name: qa
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+jobs:
+  qa:
+    name: Windows QA
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Ensure PSScriptAnalyzer is available
+        shell: pwsh
+        run: |
+          $minimumVersion = [version]"1.21.0"
+          $module = Get-Module -ListAvailable PSScriptAnalyzer |
+            Sort-Object Version -Descending |
+            Select-Object -First 1
+
+          if (-not $module -or $module.Version -lt $minimumVersion) {
+            Install-Module PSScriptAnalyzer -Scope CurrentUser -Force -SkipPublisherCheck -MinimumVersion $minimumVersion
+          }
+
+          $resolved = Get-Module -ListAvailable PSScriptAnalyzer |
+            Sort-Object Version -Descending |
+            Select-Object -First 1
+
+          if (-not $resolved -or $resolved.Version -lt $minimumVersion) {
+            throw "PSScriptAnalyzer $minimumVersion or newer is required."
+          }
+
+      - name: Ensure Pester is available
+        shell: pwsh
+        run: |
+          $minimumVersion = [version]"5.0.0"
+          $module = Get-Module -ListAvailable Pester |
+            Sort-Object Version -Descending |
+            Select-Object -First 1
+
+          if (-not $module -or $module.Version -lt $minimumVersion) {
+            Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck -MinimumVersion $minimumVersion
+          }
+
+          $resolved = Get-Module -ListAvailable Pester |
+            Sort-Object Version -Descending |
+            Select-Object -First 1
+
+          if (-not $resolved -or $resolved.Version -lt $minimumVersion) {
+            throw "Pester $minimumVersion or newer is required."
+          }
+
+      - name: Run lint suite
+        shell: pwsh
+        run: .\tests\Invoke-Tests.ps1 -Suite lint
+
+      - name: Run integrity validation
+        shell: pwsh
+        run: .\tests\Invoke-Tests.ps1 -Suite integrity
+
+      - name: Run smoke suite
+        shell: pwsh
+        run: .\tests\Invoke-Tests.ps1 -Suite smoke
+
+      - name: Run unit suite
+        shell: pwsh
+        run: .\tests\Invoke-Tests.ps1 -Suite unit
+
+      - name: Run contract suite
+        shell: pwsh
+        run: .\tests\Invoke-Tests.ps1 -Suite contract

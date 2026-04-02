@@ -1,0 +1,160 @@
+# =============================================================================
+# boring-admin-windows — Makefile.audit
+#
+# PURPOSE
+# -------
+# Provide a safe, read-only operational entrypoint for observing
+# system state on Windows 11 machines.
+#
+# This Makefile EXISTS TO:
+# -----------------------
+# - expose verification and audit capabilities
+# - support troubleshooting and inspection
+# - document what can be safely observed
+#
+# This Makefile DOES NOT:
+# ----------------------
+# - change system state
+# - apply configuration
+# - install software
+# - perform recovery actions (visibility only)
+#
+# DESIGN PRINCIPLES
+# -----------------
+# - read-only by design
+# - explicit over implicit
+# - verify ≠ apply
+# - safe to run repeatedly
+# - readable in 5–10 years
+#
+# REQUIREMENTS
+# ------------
+# - Windows 11 Pro
+# - PowerShell 5.1+ or PowerShell 7+ (pwsh)
+#
+# USAGE
+# -----
+#   make -f Makefile.audit help
+#   make -f Makefile.audit verify-security
+#   make -f Makefile.audit audit
+#   make -f Makefile.audit recovery
+# =============================================================================
+
+
+# ---------------------------------------------------------------------------
+# Shell configuration
+# ---------------------------------------------------------------------------
+
+# Prefer PowerShell Core if available, fallback to Windows PowerShell.
+SHELL := $(shell where pwsh 2>NUL || echo powershell.exe)
+
+# Avoid profile side effects and policy persistence.
+PSFLAGS := -NoProfile -ExecutionPolicy Bypass -File
+
+.DEFAULT_GOAL := help
+
+
+# ---------------------------------------------------------------------------
+# Phony targets
+# ---------------------------------------------------------------------------
+
+.PHONY: \
+	help \
+	verify-all \
+	verify-software \
+	verify-security \
+	verify-identity \
+	verify-host \
+	verify-system \
+	verify-recovery \
+	audit \
+	audit-export \
+	audit-save \
+	audit-summary \
+	recovery
+
+
+# ---------------------------------------------------------------------------
+# HELP / DISCOVERY
+# ---------------------------------------------------------------------------
+
+help:
+	@echo ""
+	@echo "boring-admin-windows :: AUDIT / VERIFY / RECOVERY"
+	@echo "-------------------------------------------------"
+	@echo ""
+	@echo "This Makefile is READ-ONLY."
+	@echo "All targets are safe to run and do not change system state."
+	@echo ""
+	@echo "VERIFY (scoped checks):"
+	@echo "  make -f Makefile.audit verify-security"
+	@echo "  make -f Makefile.audit verify-software"
+	@echo "  make -f Makefile.audit verify-identity"
+	@echo "  make -f Makefile.audit verify-host"
+	@echo "  make -f Makefile.audit verify-system"
+	@echo "  make -f Makefile.audit verify-recovery"
+	@echo "  make -f Makefile.audit verify-all"
+	@echo ""
+	@echo "AGGREGATES (read-only):"
+	@echo "  make -f Makefile.audit audit      - run all verify checks"
+	@echo "  make -f Makefile.audit audit-export - emit machine-readable JSON audit output"
+	@echo "  make -f Makefile.audit audit-save - save human-readable audit to a file"
+	@echo "  make -f Makefile.audit audit-summary - show a short operator summary"
+	@echo "  make -f Makefile.audit recovery   - inspect recovery readiness (visibility only)"
+	@echo ""
+	@echo "NOTE:"
+	@echo " - No apply or overlay targets exist here."
+	@echo " - For system changes, review Makefile.operational."
+	@echo ""
+
+
+# ---------------------------------------------------------------------------
+# VERIFY — SCOPED, READ-ONLY
+# ---------------------------------------------------------------------------
+
+verify-all: audit
+
+verify-software:
+	$(SHELL) $(PSFLAGS) scripts/verify/software/39-software-inventory.verify.ps1
+
+verify-security:
+	$(SHELL) $(PSFLAGS) scripts/verify/security/29-security-visibility.verify.ps1
+
+verify-identity:
+	$(SHELL) $(PSFLAGS) scripts/verify/identity/46-identity-local-visibility.verify.ps1
+
+verify-host:
+	$(SHELL) $(PSFLAGS) scripts/verify/host/55-host-identity-visibility.verify.ps1
+
+verify-system:
+	$(SHELL) $(PSFLAGS) scripts/verify/system/90-system-state.verify.ps1
+
+verify-recovery:
+	$(SHELL) $(PSFLAGS) scripts/verify/recovery/60-recovery-visibility.verify.ps1
+
+
+# ---------------------------------------------------------------------------
+# AGGREGATES — READ-ONLY CONVENIENCE
+# ---------------------------------------------------------------------------
+
+audit:
+	@echo "Running full read-only audit (all verify scopes)..."
+	$(MAKE) -f Makefile.audit verify-security
+	$(MAKE) -f Makefile.audit verify-software
+	$(MAKE) -f Makefile.audit verify-identity
+	$(MAKE) -f Makefile.audit verify-host
+	$(MAKE) -f Makefile.audit verify-system
+	$(MAKE) -f Makefile.audit verify-recovery
+
+audit-export:
+	powershell.exe -NoProfile -ExecutionPolicy Bypass -File boring-admin.ps1 audit export
+
+audit-save:
+	powershell.exe -NoProfile -ExecutionPolicy Bypass -File boring-admin.ps1 audit save
+
+audit-summary:
+	powershell.exe -NoProfile -ExecutionPolicy Bypass -File boring-admin.ps1 audit summary
+
+recovery:
+	@echo "Inspecting recovery readiness (visibility only)..."
+	$(MAKE) -f Makefile.audit verify-recovery

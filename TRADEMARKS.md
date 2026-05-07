@@ -1,12 +1,23 @@
 # Trademark And Naming Policy
 
+This document defines
+the umbrella-brand policy
+for the `boring-admin` project family.
+
 This policy applies to this repository.
 
-## Protected Project Identifiers
+In this repository,
+`boring-admin-windows`
+is a project within
+the `boring-admin` family.
+
+## Protected Brand And Project Identifiers
 
 The following identifiers are reserved by the project owner unless explicit
 written permission is granted:
 
+- `boring-admin`
+- `Boring Admin`
 - `boring-admin-windows`
 - `Boring Admin Windows`
 - any logo, badge, or visual identity later designated as official
@@ -16,7 +27,7 @@ written permission is granted:
 
 You may:
 
-- reference the project by name when accurately describing it
+- reference the brand or project by name when accurately describing it
 - link to the project
 - state factual compatibility claims if they are truthful and not misleading
 - maintain a private internal fork for your own use, subject to the applicable
@@ -26,13 +37,14 @@ You may:
 
 You may not:
 
+- market a derivative as `boring-admin`
 - market a derivative as `boring-admin-windows`
 - present a fork, service, package, or adaptation as official
 - imply endorsement, sponsorship, certification, or partnership
-- use the project name or branding in a way that creates confusion about source
+- use the brand or project naming in a way that creates confusion about source
   or ownership
 - sell services, products, packages, templates, or operating-model derivatives
-  under the project name
+  under the protected project or umbrella brand name
 
 ## Derivatives And Forks
 
@@ -44,6 +56,20 @@ Recommended practice for forks:
 - use a clearly distinct name
 - identify your fork as unofficial
 - avoid reuse of official branding
+
+## Umbrella Brand Rule
+
+The `boring-admin` name
+is treated as the primary umbrella brand.
+
+Repository-specific names,
+including `boring-admin-windows`,
+are protected as project identifiers
+within that brand family.
+
+Truthful factual references
+and truthful compatibility descriptions
+remain allowed.
 
 ## Reservation Of Rights
 

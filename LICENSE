@@ -1,119 +1,88 @@
-Boring Admin Reference License 1.0
+Business Source License 1.1
 
-Copyright (c) 2026 gehorak
+License text copyright (c) 2024 MariaDB plc, All Rights Reserved.
+"Business Source License" is a trademark of MariaDB plc.
 
-1. Purpose
+--------------------------------------------------------------------------
+Licensor:             gehorak
+Licensed Work:        boring-admin-windows repository, including all files,
+                      materials, documentation, scripts, text, configuration,
+                      and related content made available in this repository,
+                      unless a specific file expressly states otherwise.
+Additional Use Grant: Production use is permitted solely for the internal
+                      operations of a single individual or a single legal
+                      entity. This Additional Use Grant does not permit
+                      offering the Licensed Work, or a derivative or modified
+                      version of it, to third parties as a hosted service,
+                      managed service, subscription service, paid training,
+                      paid consulting, paid implementation, OEM or embedded
+                      commercial offering, support offering, or other external
+                      commercial product or service without separate written
+                      permission from the Licensor.
+Change Date:          2031-01-01
+Change License:       GPL-2.0-or-later
+--------------------------------------------------------------------------
 
-This repository is made available as a reference repository for study,
-evaluation, internal use, and controlled adoption of the documented operating
-model and related implementation materials.
+Terms
 
-2. Definitions
+The Licensor hereby grants you the right to copy, modify, create derivative
+works, redistribute, and make non-production use of the Licensed Work. The
+Licensor may make an Additional Use Grant, above, permitting limited
+production use.
 
-`Repository` means all files, materials, documentation, scripts, text,
-configuration, and related content made available in this repository, unless a
-specific file expressly states otherwise.
+Effective on the Change Date, or the fourth anniversary of the first publicly
+available distribution of a specific version of the Licensed Work under this
+License, whichever comes first, the Licensor hereby grants you rights under
+the terms of the Change License, and the rights granted in the paragraph above
+terminate.
 
-`Internal Use` means use by an individual person, or within a single legal
-entity or organization, for that person's or organization's own internal
-operations, evaluation, learning, administration, or implementation, without
-public redistribution or external commercialization.
+If your use of the Licensed Work does not comply with the requirements
+currently in effect as described in this License, you must purchase a
+commercial license from the Licensor, its affiliated entities, or authorized
+resellers, or you must refrain from using the Licensed Work.
 
-`Commercial Use` means use primarily intended for commercial advantage,
-monetary compensation, sale, licensing revenue, paid services, subscription
-revenue, managed-service revenue, consulting fees, implementation fees,
-training fees, resale, or other monetized exploitation.
+All copies of the original and modified Licensed Work, and derivative works of
+the Licensed Work, are subject to this License. This License applies
+separately for each version of the Licensed Work and the Change Date may vary
+for each version of the Licensed Work released by Licensor.
 
-`Public Distribution` means making the Repository, or any modified or derived
-version of it, available to the public or to third parties outside the user's
-own organization, whether by publication, hosting, transfer, sale, licensing,
-distribution, or other disclosure.
+You must conspicuously display this License on each original or modified copy
+of the Licensed Work. If you receive the Licensed Work in original or modified
+form from a third party, the terms and conditions set forth in this License
+apply to your use of that work.
 
-`Derivative` means any modified, adapted, translated, transformed, extended,
-reorganized, repackaged, or substantially re-expressed version of the
-Repository or a substantial part of it.
+Any use of the Licensed Work in violation of this License will automatically
+terminate your rights under this License for the current and all other
+versions of the Licensed Work.
 
-3. License Grant
+This License does not grant you any right in any trademark or logo of
+Licensor or its affiliates (provided that you may use a trademark or logo of
+Licensor as expressly required by this License).
 
-Subject to the terms of this License, the author grants you a limited,
-non-exclusive, non-transferable, non-sublicensable license to:
+TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSED WORK IS PROVIDED ON AN
+"AS IS" BASIS. LICENSOR HEREBY DISCLAIMS ALL WARRANTIES AND CONDITIONS,
+EXPRESS OR IMPLIED, INCLUDING (WITHOUT LIMITATION) WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, AND
+TITLE.
 
-- access, read, and copy the Repository
-- use the Repository for personal Internal Use
-- use the Repository within your organization for Internal Use
-- modify the Repository for Internal Use only
-- share unmodified copies of the Repository for non-commercial reference
-  purposes, provided that all copyright, attribution, and license notices are
-  preserved
+MariaDB hereby grants you permission to use this License's text to license
+your works, and to refer to it using the trademark "Business Source License",
+as long as you comply with the Covenants of Licensor below.
 
-4. Conditions
+Covenants of Licensor
 
-You must preserve:
+In consideration of the right to use this License's text and the "Business
+Source License" name and trademark, Licensor covenants to MariaDB, and to all
+other recipients of the licensed work to be provided by Licensor:
 
-- the author's name
-- copyright notices
-- this License
-- any applicable notices relating to naming, branding, trademark, and
-  commercial permissions
-
-5. Restrictions
-
-Without the author's prior written permission, you may not:
-
-- engage in Commercial Use of the Repository
-- Publicly Distribute any Derivative of the Repository
-- publish, promote, distribute, or host a fork, substitute, competing, or
-  successor public version of the Repository or its documented operating model
-- sell, sublicense, relicense, resell, package, or otherwise monetize the
-  Repository or any substantial part of it
-- provide paid training, paid consulting, paid implementation, managed
-  services, hosted services, subscription services, or other paid offerings
-  based primarily on the Repository or its documented operating model
-- remove, obscure, falsify, or misrepresent authorship, origin, or ownership
-- represent any fork, Derivative, adaptation, service, or package as official,
-  endorsed, certified, or authorized by the author
-- use the Repository in any way that conflicts with the separate naming,
-  trademark, branding, or commercial-use policies published by the author
-
-6. No Public Derivative Right
-
-This License permits internal modification for Internal Use, but does not grant
-any right to Publicly Distribute modified or derived versions of the Repository
-without prior written permission from the author.
-
-7. Commercial Licensing
-
-Commercial rights in the Repository may be granted only by separate written
-agreement with the author. No Commercial Use right is granted by this License.
-
-8. Trademarks, Naming, And Branding
-
-This License does not grant any right to use any trademark, trade name, brand,
-logo, project identity, or official-status claim of the author, except as
-necessary for truthful factual reference. Any such use remains subject to the
-author's separate naming, branding, and trademark policies.
-
-9. Termination
-
-This License terminates automatically if you breach any of its terms. Upon
-termination, you must cease all use of the Repository except to the extent that
-continued possession of lawfully retained internal archival copies is required
-by law or internal compliance obligations.
-
-10. No Warranty
-
-THE REPOSITORY IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
-
-11. Limitation Of Liability
-
-TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE AUTHOR
-BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE
-REPOSITORY OR THE USE OF THE REPOSITORY.
-
-12. Entire License
-
-This License states the default permission model for the Repository unless a
-specific file or separate written agreement expressly provides otherwise.
+1. To specify as the Change License the GPL Version 2.0 or any later version,
+   or a license that is compatible with GPL Version 2.0 or a later version,
+   where "compatible" means that software provided under the Change License
+   can be included in a program with software provided under GPL Version 2.0
+   or a later version. Licensor may specify additional Change Licenses without
+   limitation.
+2. To either: (a) specify an additional grant of rights to use that does not
+   impose any additional restriction on the right granted in this License, as
+   the Additional Use Grant; or (b) insert the text "None".
+3. To specify a Change Date.
+4. Not to modify this License in any other way.

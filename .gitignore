@@ -1,0 +1,6 @@
+config/profiles/individual.local.json
+config/profiles/*.local.json
+.codex/
+.vscode/
+artifacts/
+.tmp/

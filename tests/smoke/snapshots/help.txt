@@ -1,0 +1,35 @@
+boring-admin-windows :: Public CLI
+----------------------------------
+
+Usage:
+  .\boring-admin.ps1 <command> [target] [options]
+
+Commands:
+  .\boring-admin.ps1 help                    Show help
+  .\boring-admin.ps1 version                 Show version
+  .\boring-admin.ps1 check [target]          Validate inputs, environment, and read-only state
+  .\boring-admin.ps1 plan <target>           Show planned changes
+  .\boring-admin.ps1 apply <target>          Apply explicit changes
+
+Targets:
+  check: all, security, software, identity, host, system, recovery, env, config
+  plan : bootstrap, identity, host, software, ux, consumer-noise, security
+  apply: bootstrap, identity, host, software, ux, consumer-noise, security
+
+Options:
+  --help       Show help
+  --version    Show version
+  --json       Output machine-readable JSON where supported
+  --quiet      Reduce non-essential terminal output
+  --verbose    Show additional boundary metadata
+  --dry-run    For apply, show the corresponding plan instead of changing state
+  --profile    Explicit configuration profile path
+  --change-id  Required external change reference for apply
+
+Notes:
+  - help, version, check, and plan are read-only.
+  - apply is the only public write-capable verb.
+  - check --save remains non-mutating to workstation configuration but writes local evidence under %ProgramData%\BoringAdmin\records\checks.
+  - apply requires --change-id and follows the documented exit-code contract in docs/COMMANDS.md.
+  - compatibility entrypoints are intentionally omitted from this help surface.
+  - signing, SBOM, and provenance are not claimed as solved by this surface.

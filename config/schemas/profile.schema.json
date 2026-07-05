@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "boring-admin-windows profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "profileName",
+    "profileType",
+    "hostIdentity",
+    "accounts",
+    "software"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string"
+    },
+    "profileName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profileType": {
+      "type": "string",
+      "enum": [
+        "sample",
+        "example",
+        "local"
+      ]
+    },
+    "hostIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "computerName",
+        "timeZone",
+        "systemLocale"
+      ],
+      "properties": {
+        "computerName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeZone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "systemLocale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "accounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primaryAdminName",
+        "recoveryAdminName",
+        "temporaryAccessUserName",
+        "temporaryAccessDescription"
+      ],
+      "properties": {
+        "primaryAdminName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recoveryAdminName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "temporaryAccessUserName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "temporaryAccessDescription": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "software": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packageManager",
+        "baseline",
+        "ux",
+        "network",
+        "remoteAccess",
+        "adminSpecial"
+      ],
+      "properties": {
+        "packageManager": {
+          "type": "string",
+          "enum": [
+            "choco",
+            "winget"
+          ]
+        },
+        "baseline": {
+          "$ref": "#/$defs/packageList"
+        },
+        "ux": {
+          "$ref": "#/$defs/packageList"
+        },
+        "network": {
+          "$ref": "#/$defs/packageList"
+        },
+        "remoteAccess": {
+          "$ref": "#/$defs/packageList"
+        },
+        "adminSpecial": {
+          "$ref": "#/$defs/packageList"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "packageList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/packageEntry"
+      }
+    },
+    "packageEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "source",
+        "reviewedPublisher",
+        "required"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewedPublisher": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

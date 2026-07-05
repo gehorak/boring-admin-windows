@@ -1,0 +1,32 @@
+{
+  "scope": "system-state",
+  "generatedAt": "2026-04-01T12:00:04+02:00",
+  "system": {
+    "os": {
+      "caption": "Windows 11 Pro",
+      "version": "10.0.26100"
+    },
+    "computer": {
+      "name": "FIXTURE-HOST"
+    },
+    "administrators": [],
+    "defender": {
+      "serviceState": "Running"
+    },
+    "firewall": {
+      "profilesEnabled": true
+    },
+    "bitLocker": {
+      "protectedVolumes": 1
+    },
+    "policyMarkers": [],
+    "chocolatey": {
+      "present": true
+    },
+    "temporaryAccessAccount": {
+      "name": "temporary-access",
+      "enabled": false
+    }
+  },
+  "warnings": []
+}

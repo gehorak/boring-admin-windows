@@ -1,0 +1,49 @@
+{
+  "scope": "software-inventory",
+  "generatedAt": "2026-04-01T12:00:01+02:00",
+  "computerName": "FIXTURE-HOST",
+  "packageManager": {
+    "configured": "choco",
+    "chocolatey": {
+      "present": true,
+      "version": "2.4.1"
+    },
+    "winget": {
+      "present": true,
+      "version": "1.9.25200"
+    }
+  },
+  "inventory": {
+    "baselinePackageCount": 3,
+    "baselinePackages": [
+      {
+        "id": "git",
+        "expectedVersion": "2.55.0",
+        "observedVersion": "2.55.0",
+        "required": true,
+        "source": "https://community.chocolatey.org/api/v2/",
+        "reviewedPublisher": "The Git Development Community",
+        "status": "present"
+      },
+      {
+        "id": "pwsh",
+        "expectedVersion": "7.6.3",
+        "observedVersion": "7.6.3",
+        "required": true,
+        "source": "https://community.chocolatey.org/api/v2/",
+        "reviewedPublisher": "Microsoft",
+        "status": "present"
+      },
+      {
+        "id": "7zip",
+        "expectedVersion": "26.2.0",
+        "observedVersion": "26.2.0",
+        "required": true,
+        "source": "https://community.chocolatey.org/api/v2/",
+        "reviewedPublisher": "Igor Pavlov",
+        "status": "present"
+      }
+    ]
+  },
+  "warnings": []
+}

@@ -1,0 +1,48 @@
+{
+  "scope": "identity-local-visibility",
+  "generatedAt": "2026-04-01T12:00:02+02:00",
+  "identity": {
+    "administratorsGroupName": "Administrators",
+    "localUsers": [
+      {
+        "name": "admin.LOCAL",
+        "enabled": true,
+        "passwordExpires": false
+      },
+      {
+        "name": "admin.RECOVERY",
+        "enabled": false,
+        "passwordExpires": false
+      },
+      {
+        "name": "guest.TEMP",
+        "enabled": false,
+        "passwordExpires": true
+      }
+    ],
+    "administratorsGroup": [
+      {
+        "name": "FIXTURE-HOST\\admin.LOCAL"
+      }
+    ],
+    "managedAccounts": [
+      {
+        "name": "admin.LOCAL",
+        "exists": true,
+        "enabled": true
+      },
+      {
+        "name": "admin.RECOVERY",
+        "exists": true,
+        "enabled": false
+      },
+      {
+        "name": "guest.TEMP",
+        "exists": true,
+        "enabled": false
+      }
+    ],
+    "disabledAdministrators": []
+  },
+  "warnings": []
+}

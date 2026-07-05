@@ -1,0 +1,12 @@
+Check Summary
+-------------
+
+[INFO] Generated at: <generatedAt>
+[INFO] Computer name: <computerName>
+
+[WARN] security: 1 warning(s)
+[INFO] software: no warnings
+[INFO] identity: no warnings
+[INFO] host: no warnings
+[INFO] system: no warnings
+[INFO] recovery: no warnings

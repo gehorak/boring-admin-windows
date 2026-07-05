@@ -1,0 +1,10 @@
+{
+  "modules": {
+    "PSScriptAnalyzer": {
+      "requiredVersion": "1.25.0"
+    },
+    "Pester": {
+      "requiredVersion": "5.7.1"
+    }
+  }
+}

@@ -1,0 +1,117 @@
+name: qa
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  qa:
+    name: Windows QA
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Run secret and supply-chain guardrails
+        shell: pwsh
+        run: .\tests\integrity\08-secrets-and-supply-chain.ps1
+
+      - name: Ensure PSScriptAnalyzer is available
+        shell: pwsh
+        run: |
+          $deps = Get-Content -Raw -LiteralPath '.\tests\qa-dependencies.json' | ConvertFrom-Json
+          $requiredVersion = [version]$deps.modules.PSScriptAnalyzer.requiredVersion
+          $module = Get-Module -ListAvailable PSScriptAnalyzer |
+            Where-Object { $_.Version -eq $requiredVersion } |
+            Select-Object -First 1
+
+          if (-not $module) {
+            Install-Module PSScriptAnalyzer -Scope CurrentUser -Repository PSGallery -Force -RequiredVersion $requiredVersion
+          }
+
+          $resolved = Get-Module -ListAvailable PSScriptAnalyzer |
+            Where-Object { $_.Version -eq $requiredVersion } |
+            Select-Object -First 1
+
+          if (-not $resolved) {
+            throw "PSScriptAnalyzer $requiredVersion is required."
+          }
+
+      - name: Ensure Pester is available
+        shell: pwsh
+        run: |
+          $deps = Get-Content -Raw -LiteralPath '.\tests\qa-dependencies.json' | ConvertFrom-Json
+          $requiredVersion = [version]$deps.modules.Pester.requiredVersion
+          $module = Get-Module -ListAvailable Pester |
+            Where-Object { $_.Version -eq $requiredVersion } |
+            Select-Object -First 1
+
+          if (-not $module) {
+            Install-Module Pester -Scope CurrentUser -Repository PSGallery -Force -RequiredVersion $requiredVersion
+          }
+
+          $resolved = Get-Module -ListAvailable Pester |
+            Where-Object { $_.Version -eq $requiredVersion } |
+            Select-Object -First 1
+
+          if (-not $resolved) {
+            throw "Pester $requiredVersion is required."
+          }
+
+      - name: Run lint suite
+        shell: pwsh
+        run: |
+          .\tests\Invoke-Tests.ps1 -Suite lint
+          $code = $LASTEXITCODE
+          Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Value "## QA summary"
+          Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Value ""
+          Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Value "- lint: $(if ($code -eq 0) { 'passed' } else { "failed (exit $code)" })"
+          if ($code -ne 0) {
+            throw "Lint suite failed with exit code $code."
+          }
+
+      - name: Run integrity validation
+        shell: pwsh
+        run: |
+          .\tests\Invoke-Tests.ps1 -Suite integrity
+          $code = $LASTEXITCODE
+          Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Value "- integrity: $(if ($code -eq 0) { 'passed' } else { "failed (exit $code)" })"
+          if ($code -ne 0) {
+            throw "Integrity suite failed with exit code $code."
+          }
+
+      - name: Run smoke suite
+        shell: pwsh
+        run: |
+          .\tests\Invoke-Tests.ps1 -Suite smoke
+          $code = $LASTEXITCODE
+          Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Value "- smoke: $(if ($code -eq 0) { 'passed' } else { "failed (exit $code)" })"
+          if ($code -ne 0) {
+            throw "Smoke suite failed with exit code $code."
+          }
+
+      - name: Run unit suite
+        shell: pwsh
+        run: |
+          .\tests\Invoke-Tests.ps1 -Suite unit
+          $code = $LASTEXITCODE
+          Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Value "- unit: $(if ($code -eq 0) { 'passed' } else { "failed (exit $code)" })"
+          if ($code -ne 0) {
+            throw "Unit suite failed with exit code $code."
+          }
+
+      - name: Run contract suite
+        shell: pwsh
+        run: |
+          .\tests\Invoke-Tests.ps1 -Suite contract
+          $code = $LASTEXITCODE
+          Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Value "- contract: $(if ($code -eq 0) { 'passed' } else { "failed (exit $code)" })"
+          if ($code -ne 0) {
+            throw "Contract suite failed with exit code $code."
+          }

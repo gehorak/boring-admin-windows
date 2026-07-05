@@ -1,0 +1,20 @@
+{
+  "scope": "recovery-visibility",
+  "generatedAt": "2026-04-01T12:00:05+02:00",
+  "recovery": {
+    "recoveryAdministrator": {
+      "name": "recovery-admin",
+      "enabled": false
+    },
+    "bitLockerVolumes": [
+      {
+        "mountPoint": "C:",
+        "keyProtectorCount": 2
+      }
+    ],
+    "externalChecklist": {
+      "documented": true
+    }
+  },
+  "warnings": []
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "../schemas/profile.schema.json",
+  "schemaVersion": "2",
+  "profileName": "individual-example",
+  "profileType": "example",
+  "hostIdentity": {
+    "computerName": "FIXTURE-HOST",
+    "timeZone": "UTC",
+    "systemLocale": "en-US"
+  },
+  "accounts": {
+    "primaryAdminName": "admin.LOCAL",
+    "recoveryAdminName": "admin.RECOVERY",
+    "temporaryAccessUserName": "guest.TEMP",
+    "temporaryAccessDescription": "Temporary local access account (manual)"
+  },
+  "software": {
+    "packageManager": "choco",
+    "baseline": [
+      {
+        "id": "git",
+        "version": "2.55.0",
+        "source": "https://community.chocolatey.org/api/v2/",
+        "reviewedPublisher": "The Git Development Community",
+        "required": true
+      },
+      {
+        "id": "pwsh",
+        "version": "7.6.3",
+        "source": "https://community.chocolatey.org/api/v2/",
+        "reviewedPublisher": "Microsoft",
+        "required": true
+      },
+      {
+        "id": "7zip",
+        "version": "26.2.0",
+        "source": "https://community.chocolatey.org/api/v2/",
+        "reviewedPublisher": "Igor Pavlov",
+        "required": true
+      }
+    ],
+    "ux": [],
+    "network": [],
+    "remoteAccess": [],
+    "adminSpecial": []
+  }
+}

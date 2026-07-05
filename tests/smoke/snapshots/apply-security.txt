@@ -1,0 +1,5 @@
+[FAIL] No write-capable security apply flow is implemented in v002.
+[INFO] run_id: <run_id>
+[INFO] error_id: apply.security.unsupported
+[INFO] exit_code: 12
+[INFO] next_action: Use the documented read-only check target instead.

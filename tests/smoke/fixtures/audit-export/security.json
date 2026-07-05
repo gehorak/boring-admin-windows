@@ -1,0 +1,30 @@
+{
+  "scope": "security-visibility",
+  "generatedAt": "2026-04-01T12:00:00+02:00",
+  "security": {
+    "windowsDefender": {
+      "serviceState": "Running",
+      "status": {
+        "antivirusEnabled": true,
+        "realTimeProtection": true,
+        "tamperProtection": true
+      }
+    },
+    "firewallProfiles": [
+      {
+        "name": "Domain",
+        "enabled": true
+      }
+    ],
+    "bitLockerVolumes": [
+      {
+        "mountPoint": "C:",
+        "protectionStatus": 1
+      }
+    ],
+    "secureBootEnabled": true
+  },
+  "warnings": [
+    "Defender detailed status unavailable."
+  ]
+}
